@@ -107,8 +107,9 @@ public class Server {
 				rn = (rn+1)%8;
 				for(i=3; i < buffer.length-5; i++) {
 					System.out.print((char)buffer[i]);
-					System.out.println();
+
 				}
+				System.out.println();
 				// 데이터 송신
 				for( i=0; i<10;i++) { // 10 times retransmission
 					send_packet = new DatagramPacket(buffer, buffer.length, remoteaddr, remoteport);
@@ -135,7 +136,7 @@ public class Server {
 		byte control = makeScontrol(error);
 		compbitset.append(control);
 		byte[] crccode = new byte[4];
-		crccode = getCRC(compbitset.toByteArray(),compbitset.toByteArray().length);
+		crccode = getCRC(compbitset.toByteArray(),compbitset.toByteArray().length-1);
 		compbitset.append(crccode);
 		compbitset.append(flag);
 	//	System.out.println(compbitset.toString());
@@ -154,7 +155,7 @@ public class Server {
 		byte[] info = information.getBytes();
 		compbitset.append(info);
 		byte[] crccode = new byte[4];
-		crccode = getCRC(compbitset.toByteArray(),compbitset.toByteArray().length);
+		crccode = getCRC(compbitset.toByteArray(),compbitset.toByteArray().length-1);
 		compbitset.append(crccode);
 		compbitset.append(flag);
 	//	System.out.println(compbitset.toString());
