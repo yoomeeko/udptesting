@@ -136,7 +136,7 @@ public class Server {
 		CompactBitSet compbitset = new CompactBitSet();
 		byte flag = (byte) 0x7E;
 		compbitset.append(flag);
-		byte id = (byte) Integer.parseInt(ID)
+		byte id = (byte) Integer.parseInt(ID);
 		compbitset.append(id);
 		byte control = makeIcontrol();
 		compbitset.append(control);
