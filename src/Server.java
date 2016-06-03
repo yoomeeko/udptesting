@@ -123,10 +123,8 @@ public class Server {
 		compbitset.append(id);
 		byte control = makeScontrol(error);
 		compbitset.append(control);
-		CRC32 crc32 = new CRC32();
-		crc32.update(compbitset.toByteArray());
 		byte[] crccode = new byte[4];
-		crccode = Long.toString(crc32.getValue()).getBytes();
+		crccode = getCRC(compbitset.toByteArray());
 		compbitset.append(crccode);
 		compbitset.append(flag);
 		System.out.println(compbitset.toString());
@@ -144,10 +142,8 @@ public class Server {
 		compbitset.append(control);
 		byte[] info = information.getBytes();
 		compbitset.append(info);
-		CRC32 crc32 = new CRC32();
-		crc32.update(compbitset.toByteArray());
 		byte[] crccode = new byte[4];
-		crccode = Long.toString(crc32.getValue()).getBytes();
+		crccode = getCRC(compbitset.toByteArray());
 		compbitset.append(crccode);
 		compbitset.append(flag);
 		System.out.println(compbitset.toString());
@@ -168,10 +164,8 @@ public class Server {
 		byte[] information = new byte[500];
 		for(int i=0; i<500; i++) information[i] = 0x55;
 		compbitset.append(information);
-		CRC32 crc32 = new CRC32();
-		crc32.update(compbitset.toByteArray());
 		byte[] crccode = new byte[4];
-		crccode = Long.toString(crc32.getValue()).getBytes();
+		crccode = getCRC(compbitset.toByteArray());
 		compbitset.append(crccode);
 		compbitset.append(flag);
 		System.out.println(compbitset.toString());
