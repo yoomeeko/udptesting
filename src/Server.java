@@ -106,7 +106,7 @@ public class Server {
 				buffer = Arrays.copyOfRange(buffer, 0,i+1);
 				rn = (rn+1)%8;
 				// 데이터 송신
-				for(int i=0; i<10;i++) { // 10 times retransmission
+				for( i=0; i<10;i++) { // 10 times retransmission
 					send_packet = new DatagramPacket(buffer, buffer.length, remoteaddr, remoteport);
 					socket.send (send_packet);
 					tclick.Timeoutset(i, 1000, p);// Timeout Start
