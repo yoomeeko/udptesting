@@ -28,18 +28,16 @@ class RcvThread extends Thread {
 			try {
 		       socket.receive(rcv_packet);  
 		       Server.remoteport = rcv_packet.getPort();// 임의의 소켓에 대한 응답을 위해
-		       System.out.println(Server.remoteport);
 		       Server.remoteaddr = rcv_packet.getAddress();// 임의의 소켓에 대한 응답을 위해
-		       System.out.println(Server.remoteaddr);
 		       CompactBitSet compbitset = new CompactBitSet();
 		       compbitset.append(bufftemp);
 		       bufftemp = compbitset.toByteArray();
-		       System.out.println(bufftemp[0]);
 			} catch(IOException e) {
 				System.out.println("Thread exception "+e);
 			}
 			error = Error(bufftemp);
-			//if((IsUframe(buff)||IsSframe(buff))&&error) continue;
+			
+			if((IsUframe(bufftemp)||IsSframe(bufftemp))&&error) continue;
 			
 			makeFrameAndSendingIfNeed(bufftemp);
 
@@ -106,9 +104,16 @@ class RcvThread extends Thread {
 	}
 	private boolean Error(byte[] buff) {
 		// TODO Auto-generated method stub
+		CompactBitSet compbitset = new CompactBitSet();
+		compbitset.append(buff);
+		buff = compbitset.toByteArray();
+		System.out.println(buff[0]);
 		//1. flag 체크 buff[0]
-		if(buff[0] != 127) return true;
-		if(buff[buff.length-1] != (byte) 0x7E) return true;
+		System.out.println("hello0");
+		if(buff[0] != 126) return true;
+		System.out.println("hello1");
+		if(buff[buff.length-1] != (byte) 126) return true;
+		System.out.println("hello2");
 		//2. CRC 체크 
 		CRC32 crc32 = new CRC32();
 		System.out.println(buff.length);
