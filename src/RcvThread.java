@@ -32,6 +32,7 @@ class RcvThread extends Thread {
 		       CompactBitSet compbitset = new CompactBitSet();
 		       compbitset.append(bufftemp);
 		       bufftemp = compbitset.toByteArray();
+		       System.out.println(compbitset.toString());
 			} catch(IOException e) {
 				System.out.println("Thread exception "+e);
 			}
@@ -104,16 +105,9 @@ class RcvThread extends Thread {
 	}
 	private boolean Error(byte[] buff) {
 		// TODO Auto-generated method stub
-		CompactBitSet compbitset = new CompactBitSet();
-		compbitset.append(buff);
-		buff = compbitset.toByteArray();
-		System.out.println(buff[0]);
 		//1. flag üũ buff[0]
-		System.out.println("hello0");
 		if(buff[0] != 126) return true;
-		System.out.println("hello1");
 		if(buff[buff.length-1] != (byte) 126) return true;
-		System.out.println("hello2");
 		//2. CRC üũ 
 		CRC32 crc32 = new CRC32();
 		System.out.println(buff.length);
@@ -123,6 +117,7 @@ class RcvThread extends Thread {
 		if(crccode[0] != buff[buff.length-5] || crccode[1]!=buff[buff.length-4] || 
 				crccode[2]!=buff[buff.length-3]||crccode[3]!=buff[buff.length-2])
 			return true;
+		System.out.println("hello");
 		byte rntemp;
 		if(IsSframe(buff)){
 		//3. control üũ

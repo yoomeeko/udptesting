@@ -161,8 +161,7 @@ public class Server {
 		CompactBitSet compbitset = new CompactBitSet();
 		byte flag = (byte) 0x7E;
 		compbitset.append(flag);
-		String s = Integer.toHexString(Integer.parseInt(ID));
-		byte[] id = s.getBytes();	
+		byte id = (byte) Integer.parseInt(ID);	
 		compbitset.append(id);
 		byte control;
 		if(mode.equals("client")) control = (byte) 0xC1; 

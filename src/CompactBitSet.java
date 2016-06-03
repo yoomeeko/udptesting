@@ -70,7 +70,7 @@ public class CompactBitSet extends BitSet {
 		StringBuilder sb = new StringBuilder();
 		byte[] byteArray = super.toByteArray();
 		for (int i = 0; i < byteArray.length; i++)
-			sb.append(String.format("%02X ", byteArray[i]));
+			sb.append(String.format(i + " : %02X ", byteArray[i]));
 		return sb.toString();
 	}
 
