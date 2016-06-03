@@ -264,13 +264,13 @@ public class Server {
 		byte control = 0x00;
 		switch(rn){
 		case 0 : 
-			control = (byte) 0x01;
+			control = (byte) 0x01;//0000 0001
 			break;
 		case 1 :
-			control = (byte) 0x12;
+			control = (byte) 0x12;//0001 0010
 			break;
 		case 2 :
-			control = (byte) 0x23;
+			control = (byte) 0x23;//0010 0011
 			break;
 		case 3 :
 			control = (byte) 0x34;

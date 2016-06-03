@@ -95,13 +95,14 @@ class RcvThread extends Thread {
 	private boolean IsIframe(byte[] buff) {
 		// TODO Auto-generated method stub
 		byte control = buff[2];
-		if(control >= (byte) 0x80 && control <= (byte) 0xBF) return true;
+		if(control == (byte) 0x01 ||control == (byte) 0x12||control == (byte) 0x23||control == (byte) 0x34
+				||control == (byte) 0x45||control == (byte) 0x56||control == (byte) 0x67||control == (byte) 0x70) return true;
 		else return false;
 	}
 	private boolean IsSframe(byte[] buff) {
 		// TODO Auto-generated method stub
 		byte control = buff[2];
-		if(control >= (byte) 0x00 && control <= (byte) 0x7F) return true;
+		if((control >= (byte)0x90 && control <=(byte)0x97) || (control >= (byte)0x80 && control <=(byte)0x87) ) return true;
 		else return false;
 	}
 
