@@ -43,11 +43,12 @@ class RcvThread extends Thread {
 			} catch(IOException e) {
 				System.out.println("Thread exception "+e);
 			}
-			error = Error(Arrays.copyOfRange(buff, 0,bufferlength));
+			buff = Arrays.copyOfRange(buff, 0,bufferlength-1);
+			error = Error(buff);
 			
-			if((IsUframe(Arrays.copyOfRange(buff, 0,bufferlength))||IsSframe(Arrays.copyOfRange(buff, 0,bufferlength)))&&error) continue;
+			if((IsUframe(buff)||IsSframe(buff))&&error) continue;
 			
-			makeFrameAndSendingIfNeed(Arrays.copyOfRange(buff, 0,bufferlength));
+			makeFrameAndSendingIfNeed(buff);
 
 
 		}
