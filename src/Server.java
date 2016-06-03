@@ -90,7 +90,6 @@ public class Server {
 			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 			while (true) {
 				// 키보드 입력 읽기
-				System.out.print("Input Data : ");
 				String information = br.readLine();
 				if (information.length() == 0){ // no char carriage return 
 					System.out.println("grace out call");
@@ -116,7 +115,6 @@ public class Server {
 					socket.send (send_packet);
 					tclick.Timeoutset(i, 1000, p);// Timeout Start
 					p.waitingACK(); /* ACKED */
-					System.out.println("Wakeup!");
 					if(Signaling.ACKNOTIFY) {tclick.Timeoutcancel(i); break;} //timeout 되기 전에 ACK 도착
 					// true: ACK,  false: Timeout
 					else System.out.println("Retransmission : "+information);
