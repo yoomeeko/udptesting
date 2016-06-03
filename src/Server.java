@@ -5,6 +5,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.zip.CRC32;
 public class Server {
 	final static int MAXBUFFER = 508;
@@ -97,6 +98,12 @@ public class Server {
 				}					
 				//I-frame 积己
 				buffer = makeIframe(ID, rn, information);
+				int i=1;
+				while(i<Server.MAXBUFFER+1){
+					if(buffer[i] == 0x7E) break;
+					i++;
+				}
+				buffer = Arrays.copyOfRange(buffer, 0,i+1);
 				rn = (rn+1)%8;
 				// 单捞磐 价脚
 				for(int i=0; i<10;i++) { // 10 times retransmission
@@ -127,7 +134,7 @@ public class Server {
 		crccode = getCRC(compbitset.toByteArray(),compbitset.toByteArray().length);
 		compbitset.append(crccode);
 		compbitset.append(flag);
-		System.out.println(compbitset.toString());
+	//	System.out.println(compbitset.toString());
 		return compbitset.toByteArray();
 	}
 	
@@ -146,7 +153,7 @@ public class Server {
 		crccode = getCRC(compbitset.toByteArray(),compbitset.toByteArray().length);
 		compbitset.append(crccode);
 		compbitset.append(flag);
-		System.out.println(compbitset.toString());
+	//	System.out.println(compbitset.toString());
 		
 		return compbitset.toByteArray();
 	}
@@ -168,7 +175,7 @@ public class Server {
 		crccode = getCRC(compbitset.toByteArray(), compbitset.toByteArray().length-1);
 		compbitset.append(crccode);
 		compbitset.append(flag);
-		System.out.println(compbitset.toString());
+	//	System.out.println(compbitset.toString());
 		return compbitset.toByteArray();
 	}
 	static byte[] getCRC(byte[] frame, int length)
