@@ -105,7 +105,9 @@ class RcvThread extends Thread {
 	private boolean Error(byte[] buff) {
 		// TODO Auto-generated method stub
 		//1. flag üũ buff[0]
+		System.out.println(buff.length);
 		if(buff[0] != 126) return true;
+		
 		if(buff[buff.length-1] != (byte) 126) return true;
 		//2. CRC üũ 
 		System.out.println(buff.length);
