@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.Arrays;
 import java.util.zip.CRC32;
 
 
@@ -13,6 +14,7 @@ class RcvThread extends Thread {
 	Signaling p;
 	String ID;
 	boolean error = false;
+	int bufferlength;
 	RcvThread (DatagramSocket s, Signaling pp, String ID) {
 		socket = s;
 		p=pp;		
@@ -20,7 +22,7 @@ class RcvThread extends Thread {
 	}	
 	
 	public void run() {
-		byte[] bufftemp = new byte[Server.MAXBUFFER];
+		byte[] bufftemp = new byte[Server.MAXBUFFER+1];
 		byte[] buff = null;
 		String s;
 		rcv_packet = new DatagramPacket(bufftemp, bufftemp.length);
@@ -32,15 +34,20 @@ class RcvThread extends Thread {
 		       CompactBitSet compbitset = new CompactBitSet();
 		       compbitset.append(bufftemp);
 		       buff = compbitset.toByteArray();
+		       int i=1;
+		       while(i<Server.MAXBUFFER+1){
+		    	   if(buff[i] == 0x7E) break;
+		       }
+		       bufferlength = i;
 		       System.out.println(compbitset.toString());
 			} catch(IOException e) {
 				System.out.println("Thread exception "+e);
 			}
-			error = Error(buff);
+			error = Error(Arrays.copyOfRange(buff, 0,bufferlength));
 			
-			if((IsUframe(buff)||IsSframe(buff))&&error) continue;
+			if((IsUframe(Arrays.copyOfRange(buff, 0,bufferlength))||IsSframe(Arrays.copyOfRange(buff, 0,bufferlength)))&&error) continue;
 			
-			makeFrameAndSendingIfNeed(buff);
+			makeFrameAndSendingIfNeed(Arrays.copyOfRange(buff, 0,bufferlength));
 
 
 		}
@@ -106,9 +113,7 @@ class RcvThread extends Thread {
 	private boolean Error(byte[] buff) {
 		// TODO Auto-generated method stub
 		//1. flag üũ buff[0]
-		System.out.println(buff.length);
-		if(buff[0] != 126) return true;
-		
+		if(buff[0] != 126) return true;		
 		if(buff[buff.length-1] != (byte) 126) return true;
 		//2. CRC üũ 
 		System.out.println(buff.length);
