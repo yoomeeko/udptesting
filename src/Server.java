@@ -70,7 +70,7 @@ public class Server {
 					socket.send (send_packet);//send U-frame
 					tclick.Timeoutset(i, 1000, p);// Timeout Start
 					p.waitingACK(); /* ACKED */		
-					System.out.println("Wakeup!");
+					//System.out.println("Wakeup!");
 					if(Signaling.ACKNOTIFY) {tclick.Timeoutcancel(i); break;} //timeout 되기전 ACK 도착
 						// true: ACK,  false: Timeout
 					else System.out.println("Retransmission " + buffer.toString());
@@ -79,7 +79,6 @@ public class Server {
 			} else if(args.length == 2)//server
 			{	
 				p.waitingACK();
-				System.out.println("Wakeup!");
 				// true: ACK,  false: Timeout
 			}
 
@@ -104,11 +103,11 @@ public class Server {
 				}
 				buffer = Arrays.copyOfRange(buffer, 0,i+1);
 				rn = (rn+1)%8;
-				for(i=3; i < buffer.length-5; i++) {
+			/*	for(i=3; i < buffer.length-5; i++) {
 					System.out.print((char)buffer[i]);
 
 				}
-				System.out.println();
+				System.out.println();*/
 				// 데이터 송신
 				for( i=0; i<10;i++) { // 10 times retransmission
 					send_packet = new DatagramPacket(buffer, buffer.length, remoteaddr, remoteport);

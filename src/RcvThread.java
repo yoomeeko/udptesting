@@ -49,11 +49,13 @@ class RcvThread extends Thread {
 			error = Error(buff);
 			
 			if((IsUframe(buff)||IsSframe(buff))&&error) continue;
+			if(!IsUframe(buff)){
 		    for(int j=3; j<buff.length-5; j++){
 		    	System.out.print((char)buff[j]);
 
 	       }
 	       System.out.println();
+			}
 			makeFrameAndSendingIfNeed(buff);
 
 
