@@ -20,7 +20,8 @@ class RcvThread extends Thread {
 	}	
 	
 	public void run() {
-		byte[] bufftemp = new byte[Server.MAXBUFFER+5];
+		byte[] bufftemp = new byte[Server.MAXBUFFER];
+		byte[] buff = null;
 		String s;
 		rcv_packet = new DatagramPacket(bufftemp, bufftemp.length);
 		while (sem) {
@@ -30,16 +31,16 @@ class RcvThread extends Thread {
 		       Server.remoteaddr = rcv_packet.getAddress();// 임의의 소켓에 대한 응답을 위해
 		       CompactBitSet compbitset = new CompactBitSet();
 		       compbitset.append(bufftemp);
-		       bufftemp = compbitset.toByteArray();
+		       buff = compbitset.toByteArray();
 		       System.out.println(compbitset.toString());
 			} catch(IOException e) {
 				System.out.println("Thread exception "+e);
 			}
-			error = Error(bufftemp);
+			error = Error(buff);
 			
-			if((IsUframe(bufftemp)||IsSframe(bufftemp))&&error) continue;
+			if((IsUframe(buff)||IsSframe(buff))&&error) continue;
 			
-			makeFrameAndSendingIfNeed(bufftemp);
+			makeFrameAndSendingIfNeed(buff);
 
 
 		}
