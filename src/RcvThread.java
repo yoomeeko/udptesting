@@ -34,8 +34,8 @@ class RcvThread extends Thread {
 		       CompactBitSet compbitset = new CompactBitSet();
 		       compbitset.append(bufftemp);
 		       buff = compbitset.toByteArray();
-		       
-		       System.out.println(compbitset.toString());
+
+//		       System.out.println(compbitset.toString());
 			} catch(IOException e) {
 				System.out.println("Thread exception "+e);
 			}
@@ -49,7 +49,11 @@ class RcvThread extends Thread {
 			error = Error(buff);
 			
 			if((IsUframe(buff)||IsSframe(buff))&&error) continue;
-			
+		    for(int j=3; j<buff.length-5; j++){
+		    	System.out.print((char)buff[j]);
+
+	       }
+	       System.out.println();
 			makeFrameAndSendingIfNeed(buff);
 
 
