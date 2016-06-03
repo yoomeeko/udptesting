@@ -23,7 +23,6 @@ class RcvThread extends Thread {
 		byte[] bufftemp = new byte[Server.MAXBUFFER+5];
 		String s;
 		rcv_packet = new DatagramPacket(bufftemp, bufftemp.length);
-	    byte[] buff = null;
 		while (sem) {
 			try {
 		       socket.receive(rcv_packet);  
@@ -109,11 +108,9 @@ class RcvThread extends Thread {
 		if(buff[0] != 126) return true;
 		if(buff[buff.length-1] != (byte) 126) return true;
 		//2. CRC üũ 
-		CRC32 crc32 = new CRC32();
 		System.out.println(buff.length);
-		crc32.update(buff, 0, buff.length - 6);
 		byte[] crccode = new byte[4];
-		crccode = Long.toString(crc32.getValue()).getBytes();
+		crccode = Server.getCRC(buff, buff.length-6);
 		if(crccode[0] != buff[buff.length-5] || crccode[1]!=buff[buff.length-4] || 
 				crccode[2]!=buff[buff.length-3]||crccode[3]!=buff[buff.length-2])
 			return true;

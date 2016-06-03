@@ -124,7 +124,7 @@ public class Server {
 		byte control = makeScontrol(error);
 		compbitset.append(control);
 		byte[] crccode = new byte[4];
-		crccode = getCRC(compbitset.toByteArray());
+		crccode = getCRC(compbitset.toByteArray(),compbitset.toByteArray().length);
 		compbitset.append(crccode);
 		compbitset.append(flag);
 		System.out.println(compbitset.toString());
@@ -143,7 +143,7 @@ public class Server {
 		byte[] info = information.getBytes();
 		compbitset.append(info);
 		byte[] crccode = new byte[4];
-		crccode = getCRC(compbitset.toByteArray());
+		crccode = getCRC(compbitset.toByteArray(),compbitset.toByteArray().length);
 		compbitset.append(crccode);
 		compbitset.append(flag);
 		System.out.println(compbitset.toString());
@@ -165,18 +165,18 @@ public class Server {
 		for(int i=0; i<500; i++) information[i] = 0x55;
 		compbitset.append(information);
 		byte[] crccode = new byte[4];
-		crccode = getCRC(compbitset.toByteArray());
+		crccode = getCRC(compbitset.toByteArray(), compbitset.toByteArray().length);
 		compbitset.append(crccode);
 		compbitset.append(flag);
 		System.out.println(compbitset.toString());
 		return compbitset.toByteArray();
 	}
-	static byte[] getCRC(byte[] frame)
+	static byte[] getCRC(byte[] frame, int length)
 	{
 		byte[] tempCRC = new byte[4];
 		
 		CRC32 crc32 = new CRC32();
-		crc32.update(frame, 0, 23);
+		crc32.update(frame, 0, length);
 		long temp = crc32.getValue();
 		
 		tempCRC[3] = (byte)(int)(temp & 255L);
