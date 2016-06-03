@@ -69,7 +69,7 @@ class RcvThread extends Thread {
 			}
 			p.ACKnotifying();/* ACKED */
 		}
-		else if(IsSframe(buff)){
+		else if(IsSframe(buff) || (IsUframe(buff) && !IsClient(buff))){
 			p.ACKnotifying();/* ACKED */
 		}
 		else if(IsIframe(buff)){
