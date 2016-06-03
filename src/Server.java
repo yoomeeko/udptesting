@@ -165,7 +165,7 @@ public class Server {
 		for(int i=0; i<500; i++) information[i] = 0x55;
 		compbitset.append(information);
 		byte[] crccode = new byte[4];
-		crccode = getCRC(compbitset.toByteArray(), compbitset.toByteArray().length);
+		crccode = getCRC(compbitset.toByteArray(), compbitset.toByteArray().length-1);
 		compbitset.append(crccode);
 		compbitset.append(flag);
 		System.out.println(compbitset.toString());
