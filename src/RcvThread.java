@@ -37,13 +37,14 @@ class RcvThread extends Thread {
 		       int i=1;
 		       while(i<Server.MAXBUFFER+1){
 		    	   if(buff[i] == 0x7E) break;
+		    	   i++;
 		       }
 		       bufferlength = i;
 		       System.out.println(compbitset.toString());
 			} catch(IOException e) {
 				System.out.println("Thread exception "+e);
 			}
-			buff = Arrays.copyOfRange(buff, 0,bufferlength-1);
+			buff = Arrays.copyOfRange(buff, 0,bufferlength);
 			error = Error(buff);
 			
 			if((IsUframe(buff)||IsSframe(buff))&&error) continue;
