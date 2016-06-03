@@ -123,13 +123,13 @@ class RcvThread extends Thread {
 		if(buff[0] != 126) return true;		
 		if(buff[buff.length-1] != (byte) 126) return true;
 		//2. CRC üũ 
-		System.out.println(buff.length);
+//		System.out.println(buff.length);
 		byte[] crccode = new byte[4];
 		crccode = Server.getCRC(buff, buff.length-6);
 		if(crccode[0] != buff[buff.length-5] || crccode[1]!=buff[buff.length-4] || 
 				crccode[2]!=buff[buff.length-3]||crccode[3]!=buff[buff.length-2])
 			return true;
-		System.out.println("hello");
+//		System.out.println("hello");
 		byte rntemp;
 		if(IsSframe(buff)){
 		//3. control üũ
