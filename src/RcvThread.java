@@ -47,12 +47,9 @@ class RcvThread extends Thread {
 			bufferlength = i;
 			buff = Arrays.copyOfRange(buff, 0,bufferlength);
 			error = Error(buff);
-			System.out.println("hello");
-			if((IsUframe(buff)||IsSframe(buff))&&error){
-                p.ACKnotifying();
-                continue;
-            }
-			else if(!IsUframe(buff)){
+            if(error) continue;
+            if(IsSframe(buff) && getNRFromFrame(buff) ==(Server.nr+1)%2) p.ACKnotifying();
+			if(IsIframe(buff)){
 				for(int j=3; j<buff.length-5; j++){
 					System.out.print((char)buff[j]);
 				}
@@ -65,23 +62,28 @@ class RcvThread extends Thread {
 	//프레임을 만드는데 만약 필요하면 응답 프레임을 전송하는 함수
 	private byte[] makeFrameAndSendingIfNeed(byte[] buff) {
 		// TODO Auto-generated method stub
-		if(IsUframe(buff)&&IsClient(buff)){
-			buff = Server.makeUframe(ID, "Server");
-			send_packet = new DatagramPacket(buff, buff.length, Server.remoteaddr, Server.remoteport);
-			try {
-				socket.send(send_packet);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			p.ACKnotifying();/* ACKED */
-		}
-		else if(IsSframe(buff) || (IsUframe(buff) && IsClient(buff))){
-			p.ACKnotifying();/* ACKED */
-		}
-		else if(IsIframe(buff)){
-			Server.rn = (Server.rn+1)%8;
-			buff = Server.makeSframe(ID, error);
+        if(IsUframe(buff)){
+            if(IsClient(buff)){//서버가 클라이언트로부터 연결 요청을 받음
+                //답장 uframe 전송
+                buff = Server.makeUframe(ID, "Server");
+                send_packet = new DatagramPacket(buff, buff.length, Server.remoteaddr, Server.remoteport);
+                try {
+                    socket.send(send_packet);
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            else {
+                //그냥 에크 노티파이
+                p.ACKnotifying();
+                System.out.println("서버와 연결");
+            }
+        }
+        if(IsIframe(buff)) {
+            if(getNRFromFrame(buff)!=Server.nr %2) continue;
+			Server.nr = (Server.nr+1)%2;
+			buff = Server.makeSframe(ID);
 			send_packet = new DatagramPacket(buff, buff.length, Server.remoteaddr, Server.remoteport);
 			try {
 				socket.send(send_packet);
@@ -135,35 +137,50 @@ class RcvThread extends Thread {
 	//에러를 검출하는 함수
 	private boolean Error(byte[] buff) {
 		// TODO Auto-generated method stub
-		//1. flag 체크 buff[0]
-		//if(buff[0] != 126) return true;		
-		//if(buff[buff.length-1] != (byte) 126) return true;
-		//2. CRC 체크 
-		System.out.println(buff.length);
-		byte[] crccode = new byte[4];
-		
-		crccode = Server.getCRC(buff, buff.length-6);
-		System.out.println("hello");
-		if(crccode[0] != buff[buff.length-5] || crccode[1]!=buff[buff.length-4] || 
-				crccode[2]!=buff[buff.length-3]||crccode[3]!=buff[buff.length-2])
-			return true;
-		System.out.println("hello");
-		byte rntemp;
-		if(IsSframe(buff)){
-		//3. control 체크
-			rntemp = (byte) (128+16+Server.rn);
-			if(buff[2] != rntemp) return true;
-			rntemp = (byte) (128 +Server.rn);
-			if(buff[2] != rntemp) return true; 
-		}
-		if(IsIframe(buff)){
-			
-			rntemp = (byte)(Server.rn*16 + (Server.rn+1)%2);		
-			if(buff[2] != rntemp) return true;
-		}
+		boolean result = true;
+        byte[] tmp = new byte[buff.length -6];
+        for(int i=0; i<buff.length-6; ++i)
+            tmp[i] = buff[buff.length-5+i];
+        byte[] tmp_crc = new byte[4];
+        byte[] crc = new byte[4];
+        for(int i=0; i<4; i++){
+            tmp_crc[i] = buff[buff.length - 5 + i];
+        }
+        crc = Server.getCRC(tmp, tmp.length);
+        for(int i=0; i<4; i++)
+        {
+            if(tmp_crc[i] != crc[i])
+                result = false;
+        }
 		return false;
 	}
-
+    public int getNRFromFrame(byte[] buff){
+        int nr = 0;
+        byte[] BinaryFrame = buff;
+        if(IsIframe(buff) || IsSframe(buff)) nr = BinaryFrame[2] & 0x07;
+        else{
+            try{
+                throw new Exception("Incompatible type of frame.");
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+        return nr;
+    }
+    public int getNSFromFrame(byte[] buff){
+        int ns = 0;
+        byte[] BinaryFrame = buff;
+        if(IsIframe(buff)) ns = (BinaryFrame[2] >>> 4) & 0x07;
+        else {
+            try {
+                throw new Exception("Incompatible type of frame to get N(S).");
+            } catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+        return ns;
+    }
 	public void graceout(){
 		sem=false;
 	}	

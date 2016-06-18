@@ -19,7 +19,8 @@ public class Server {
 	static Signaling p= new Signaling(); // Object를 생성해서 argument로 패싱해야 waiting/notify가 됨
 	static Timeout tclick; // Timeout Interface
 	
-	public static int rn=0;
+	public static int ns=0;
+	public static int nr=0;
 	private static String ID;
 	//Server mode : args[0] - port, args[1] - ID
 	//Client mode : args[0] - addr, args[1] - port, args[2] - ID
@@ -102,7 +103,6 @@ public class Server {
 					i++;
 				}
 				buffer = Arrays.copyOfRange(buffer, 0,i+1);
-				rn = (rn+1)%2;
 			/*	for(i=3; i < buffer.length-5; i++) {
 					System.out.print((char)buffer[i]);
 
@@ -114,7 +114,10 @@ public class Server {
 					socket.send (send_packet);
 					tclick.Timeoutset(i, 1000, p);// Timeout Start
 					p.waitingACK(); /* ACKED */
-					if(Signaling.ACKNOTIFY) {tclick.Timeoutcancel(i); break;} //timeout 되기 전에 ACK 도착
+					if(Signaling.ACKNOTIFY) {
+						ns = (ns+1)%2;
+						tclick.Timeoutcancel(i);
+						break;} //timeout 되기 전에 ACK 도착
 					// true: ACK,  false: Timeout
 					else System.out.println("Retransmission : "+information);
 				}
