@@ -48,7 +48,10 @@ class RcvThread extends Thread {
 			buff = Arrays.copyOfRange(buff, 0,bufferlength);
 			error = Error(buff);
 			System.out.println("hello");
-			if((IsUframe(buff)||IsSframe(buff))&&error) continue;
+			if((IsUframe(buff)||IsSframe(buff))&&error){
+                p.ACKnotifying();
+                continue;
+            }
 			else if(!IsUframe(buff)){
 				for(int j=3; j<buff.length-5; j++){
 					System.out.print((char)buff[j]);
@@ -73,7 +76,7 @@ class RcvThread extends Thread {
 			}
 			p.ACKnotifying();/* ACKED */
 		}
-		else if(IsSframe(buff) || (IsUframe(buff) && !IsClient(buff))){
+		else if(IsSframe(buff) || (IsUframe(buff) && IsClient(buff))){
 			p.ACKnotifying();/* ACKED */
 		}
 		else if(IsIframe(buff)){
@@ -111,7 +114,8 @@ class RcvThread extends Thread {
 	private boolean IsUframe(byte[] buff) {
 		// TODO Auto-generated method stub
 		byte control = buff[2];
-		if(control == (byte) 0xC1 || control == (byte) 0xD1) return true;
+		if(control == (byte) 0xC1 || control == (byte) 0xD1)
+			return true;
 		else return false;
 	}
 	
