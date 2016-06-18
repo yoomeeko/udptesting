@@ -81,7 +81,7 @@ class RcvThread extends Thread {
             }
         }
         if(IsIframe(buff)) {
-            if(getNRFromFrame(buff)!=Server.nr %2) continue;
+            if(getNRFromFrame(buff)!=Server.nr %2) {};
 			Server.nr = (Server.nr+1)%2;
 			buff = Server.makeSframe(ID);
 			send_packet = new DatagramPacket(buff, buff.length, Server.remoteaddr, Server.remoteport);

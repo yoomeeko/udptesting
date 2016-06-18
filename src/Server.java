@@ -96,7 +96,7 @@ public class Server {
 					break;
 				}					
 				//I-frame 생성
-				buffer = makeIframe(ID, rn, information);
+				buffer = makeIframe(ID, nr, information);
 				int i=1;
 				while(i<Server.MAXBUFFER+1){
 					if(buffer[i] == 0x7E) break;
@@ -130,14 +130,14 @@ public class Server {
 	
 	
 	//각각 프레임을 만들어주는 함수
-	static byte[] makeSframe(String ID, boolean error)
+	static byte[] makeSframe(String ID)
 	{
 		CompactBitSet compbitset = new CompactBitSet();
 		byte flag = (byte) 0x7E;
 		compbitset.append(flag);
 		byte id = (byte) Integer.parseInt(ID);
 		compbitset.append(id);
-		byte control = makeScontrol(error);
+		byte control = makeScontrol();
 		compbitset.append(control);
 		byte[] crccode = new byte[4];
 		crccode = getCRC(compbitset.toByteArray(),compbitset.toByteArray().length-1);
