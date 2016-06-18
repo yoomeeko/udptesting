@@ -189,7 +189,7 @@ public class Server {
 		byte[] tempCRC = new byte[4];
 		
 		CRC32 crc32 = new CRC32();
-		crc32.update(frame, 1, length-1);
+		crc32.update(frame, 1, length);
 		long temp = crc32.getValue();
 		System.out.println(temp);//CRC value Ãâ·Â
 		tempCRC[3] = (byte)(int)(temp & 255L);

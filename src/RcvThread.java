@@ -35,7 +35,6 @@ class RcvThread extends Thread {
 		       CompactBitSet compbitset = new CompactBitSet();
 		       compbitset.append(bufftemp);
 		       buff = compbitset.toByteArray();
-
 		       System.out.println(compbitset.toString());
 			} catch(IOException e) {
 				System.out.println("Thread exception "+e);
@@ -109,7 +108,6 @@ class RcvThread extends Thread {
 		if((control >= (byte)0x90 && control <=(byte)0x97) || (control >= (byte)0x80 && control <=(byte)0x87) ) return true;
 		else return false;
 	}
-
 	private boolean IsUframe(byte[] buff) {
 		// TODO Auto-generated method stub
 		byte control = buff[2];
@@ -140,11 +138,11 @@ class RcvThread extends Thread {
 		System.out.println(buff.length);
 		byte[] crccode = new byte[4];
 		
-//		crccode = Server.getCRC(buff, buff.length-5);
-//		System.out.println("hello");
-//		if(crccode[0] != buff[buff.length-5] || crccode[1]!=buff[buff.length-4] || 
-//				crccode[2]!=buff[buff.length-3]||crccode[3]!=buff[buff.length-2])
-//			return true;
+		crccode = Server.getCRC(buff, buff.length-6);
+		System.out.println("hello");
+		if(crccode[0] != buff[buff.length-5] || crccode[1]!=buff[buff.length-4] || 
+				crccode[2]!=buff[buff.length-3]||crccode[3]!=buff[buff.length-2])
+			return true;
 		System.out.println("hello");
 		byte rntemp;
 		if(IsSframe(buff)){
