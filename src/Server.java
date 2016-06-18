@@ -201,97 +201,20 @@ public class Server {
 		tempCRC[0] = (byte)(int)(temp >>> 24 & 255L);
 		return tempCRC;
 	}
-	private static byte makeScontrol(boolean error) {
+	private static byte makeScontrol() {
 		// TODO Auto-generated method stub
-		byte control = 0x00;
-		if(error){
-			switch(rn){
-			case 0 : 
-				control = (byte) 0x90;
-				break;
-			case 1 :
-				control = (byte) 0x91;
-				break;
-			case 2 :
-				control = (byte) 0x92;
-				break;
-			case 3 :
-				control = (byte) 0x93;
-				break;
-			case 4 :
-				control = (byte) 0x94;
-				break;
-			case 5 :
-				control = (byte) 0x95;
-				break;
-			case 6 :
-				control = (byte) 0x96;
-				break;
-			case 7 :
-				control = (byte) 0x97;
-				break;
-			}
-		}
-		else {
-			switch(rn){
-			case 0 : 
-				control = (byte) 0x80;
-				break;
-			case 1 :
-				control = (byte) 0x81;
-				break;
-			case 2 :
-				control = (byte) 0x82;
-				break;
-			case 3 :
-				control = (byte) 0x83;
-				break;
-			case 4 :
-				control = (byte) 0x84;
-				break;
-			case 5 :
-				control = (byte) 0x85;
-				break;
-			case 6 :
-				control = (byte) 0x86;
-				break;
-			case 7 :
-				control = (byte) 0x87;
-				break;
-			}
-		}
-
+		byte control = (byte)0x80;
+		if(nr > 2) nr = nr %2;
+		control = (byte)  (control | nr);
 		return control;
 	}
 	private static byte makeIcontrol() {
 		// TODO Auto-generated method stub
 		byte control = 0x00;
-		switch(rn){
-		case 0 : 
-			control = (byte) 0x01;//0000 0001
-			break;
-		case 1 :
-			control = (byte) 0x12;//0001 0010
-			break;
-		case 2 :
-			control = (byte) 0x23;//0010 0011
-			break;
-		case 3 :
-			control = (byte) 0x34;
-			break;
-		case 4 :
-			control = (byte) 0x45;
-			break;
-		case 5 :
-			control = (byte) 0x56;
-			break;
-		case 6 :
-			control = (byte) 0x67;
-			break;
-		case 7 :
-			control = (byte) 0x70;
-			break;
-		}
+		if(ns > 2) ns = ns%2;
+		if(nr > 2) nr = nr%2;
+		ns <<= 4;
+		control = (byte) (control | ns | nr);
 		return control;
 	}
 }
