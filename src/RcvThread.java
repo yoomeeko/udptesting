@@ -25,7 +25,6 @@ class RcvThread extends Thread {
 		byte[] bufftemp = new byte[Server.MAXBUFFER+1];
 		byte[] buff = null;
 		String s;
-		System.out.println("hello");
 		rcv_packet = new DatagramPacket(bufftemp, bufftemp.length);
 		while (sem) {
 			try {
@@ -35,7 +34,6 @@ class RcvThread extends Thread {
 		       CompactBitSet compbitset = new CompactBitSet();
 		       compbitset.append(bufftemp);
 		       buff = compbitset.toByteArray();
-		       System.out.println(compbitset.toString());
 			} catch(IOException e) {
 				System.out.println("Thread exception "+e);
 			}
@@ -45,16 +43,14 @@ class RcvThread extends Thread {
 				i++;
 			}
 			bufferlength = i;
-			buff = Arrays.copyOfRange(buff, 0,bufferlength);
+			buff = Arrays.copyOfRange(buff, 0,bufferlength+1);
 			error = Error(buff);
             if(error) continue;
+            if(IsIframe(buff)){
+                for(int j=3; j<buff.length-5; j++) System.out.print((char)buff[j]);
+                System.out.println();
+            }
             if(IsSframe(buff) && getNRFromFrame(buff) ==(Server.nr+1)%2) p.ACKnotifying();
-			if(IsIframe(buff)){
-				for(int j=3; j<buff.length-5; j++){
-					System.out.print((char)buff[j]);
-				}
-				System.out.println();
-			}
 			makeFrameAndSendingIfNeed(buff);
 		}
 		System.out.println("grace out");
@@ -103,9 +99,8 @@ class RcvThread extends Thread {
 	private boolean IsIframe(byte[] buff) {
 		// TODO Auto-generated method stub
 		byte control = buff[2];
-		if(control == (byte) 0x01 ||control == (byte) 0x12||control == (byte) 0x23||control == (byte) 0x34
-				||control == (byte) 0x45||control == (byte) 0x56||control == (byte) 0x67||control == (byte) 0x70) return true;
-		else return false;
+		if(!IsSframe(buff)&&!IsUframe(buff)) return true;
+        return false;
 	}
 	private boolean IsSframe(byte[] buff) {
 		// TODO Auto-generated method stub
@@ -140,7 +135,7 @@ class RcvThread extends Thread {
 		boolean result = true;
         byte[] tmp = new byte[buff.length -6];
         for(int i=0; i<buff.length-6; ++i)
-            tmp[i] = buff[buff.length-5+i];
+            tmp[i] = buff[i+1];
         byte[] tmp_crc = new byte[4];
         byte[] crc = new byte[4];
         for(int i=0; i<4; i++){
@@ -152,7 +147,7 @@ class RcvThread extends Thread {
             if(tmp_crc[i] != crc[i])
                 result = false;
         }
-		return false;
+		return !result;
 	}
     public int getNRFromFrame(byte[] buff){
         int nr = 0;

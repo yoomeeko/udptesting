@@ -132,69 +132,74 @@ public class Server {
 	//각각 프레임을 만들어주는 함수
 	static byte[] makeSframe(String ID)
 	{
-		CompactBitSet compbitset = new CompactBitSet();
-		byte flag = (byte) 0x7E;
-		compbitset.append(flag);
+		CompactBitSet compbitset1 = new CompactBitSet();
+		CompactBitSet compbitset2 = new CompactBitSet();
 		byte id = (byte) Integer.parseInt(ID);
-		compbitset.append(id);
+		compbitset1.append(id);
 		byte control = makeScontrol();
-		compbitset.append(control);
+		compbitset1.append(control);
 		byte[] crccode = new byte[4];
-		crccode = getCRC(compbitset.toByteArray(),compbitset.toByteArray().length-1);
-		compbitset.append(crccode);
-		compbitset.append(flag);
+		crccode = getCRC(compbitset1.toByteArray(),compbitset1.toByteArray().length);
+		compbitset1.append(crccode);
+		byte flag = (byte) 0x7E;
+		compbitset2.append(flag);
+		compbitset2.append(compbitset1.toByteArray());
+		compbitset2.append(flag);
 	//	System.out.println(compbitset.toString());
-		return compbitset.toByteArray();
+		return compbitset2.toByteArray();
 	}
 	
 	static byte[] makeIframe(String ID, int rn, String information) {
 		// TODO Auto-generated method stub
-		CompactBitSet compbitset = new CompactBitSet();
-		byte flag = (byte) 0x7E;
-		compbitset.append(flag);
+		CompactBitSet compbitset1 = new CompactBitSet();
+		CompactBitSet compbitset2 = new CompactBitSet();
 		byte id = (byte) Integer.parseInt(ID);
-		compbitset.append(id);
+		compbitset1.append(id);
 		byte control = makeIcontrol();
-		compbitset.append(control);
+		compbitset1.append(control);
 		byte[] info = information.getBytes();
-		compbitset.append(info);
+		compbitset1.append(info);
 		byte[] crccode = new byte[4];
-		crccode = getCRC(compbitset.toByteArray(),compbitset.toByteArray().length-1);
-		compbitset.append(crccode);
-		compbitset.append(flag);
+		crccode = getCRC(compbitset1.toByteArray(),compbitset1.toByteArray().length);
+		compbitset1.append(crccode);
+		byte flag = (byte) 0x7E;
+		compbitset2.append(flag);
+		compbitset2.append(compbitset1.toByteArray());
+		compbitset2.append(flag);
 	//	System.out.println(compbitset.toString());
 		
-		return compbitset.toByteArray();
+		return compbitset2.toByteArray();
 	}
 	static byte[] makeUframe(String ID, String mode)
 	{
-		CompactBitSet compbitset = new CompactBitSet();
-		byte flag = (byte) 0x7E;
-		compbitset.append(flag);
+		CompactBitSet compbitset1 = new CompactBitSet();
+		CompactBitSet compbitset2 = new CompactBitSet();
 		byte id = (byte) Integer.parseInt(ID);	
-		compbitset.append(id);
+		compbitset1.append(id);
 		byte control;
 		if(mode.equals("client")) control = (byte) 0xC1; 
 		else control = (byte) 0xD1;
-		compbitset.append(control);
+		compbitset1.append(control);
 		byte[] information = new byte[500];
 		for(int i=0; i<500; i++) information[i] = 0x00;
-		compbitset.append(information);
+		compbitset1.append(information);
 		byte[] crccode = new byte[4];
-		crccode = getCRC(compbitset.toByteArray(), compbitset.toByteArray().length-1);
-		compbitset.append(crccode);
-		compbitset.append(flag);
+		crccode = getCRC(compbitset1.toByteArray(), compbitset1.toByteArray().length);
+		compbitset1.append(crccode);
+		byte flag = (byte) 0x7E;
+		compbitset2.append(flag);
+		compbitset2.append(compbitset1.toByteArray());
+		compbitset2.append(flag);
 	//	System.out.println(compbitset.toString());
-		return compbitset.toByteArray();
+		return compbitset2.toByteArray();
 	}
 	static byte[] getCRC(byte[] frame, int length)
 	{
 		byte[] tempCRC = new byte[4];
 		
 		CRC32 crc32 = new CRC32();
-		crc32.update(frame, 1, length);
+		crc32.update(frame, 0, length);
 		long temp = crc32.getValue();
-		System.out.println(temp);//CRC value 출력
 		tempCRC[3] = (byte)(int)(temp & 255L);
 		tempCRC[2] = (byte)(int)(temp >>> 8 & 255L);
 		tempCRC[1] = (byte)(int)(temp >>> 16 & 255L);
