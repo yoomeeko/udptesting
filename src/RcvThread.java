@@ -69,6 +69,7 @@ class RcvThread extends Thread {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
+                p.ACKnotifying();
             }
             else {
                 //그냥 에크 노티파이
