@@ -102,7 +102,7 @@ public class Server {
 					i++;
 				}
 				buffer = Arrays.copyOfRange(buffer, 0,i+1);
-				rn = (rn+1)%8;
+				rn = (rn+1)%2;
 			/*	for(i=3; i < buffer.length-5; i++) {
 					System.out.print((char)buffer[i]);
 
@@ -123,6 +123,10 @@ public class Server {
 			System.out.println(e);
 		}
 	}
+	
+	
+	
+	//각각 프레임을 만들어주는 함수
 	static byte[] makeSframe(String ID, boolean error)
 	{
 		CompactBitSet compbitset = new CompactBitSet();
@@ -185,9 +189,9 @@ public class Server {
 		byte[] tempCRC = new byte[4];
 		
 		CRC32 crc32 = new CRC32();
-		crc32.update(frame, 0, length);
+		crc32.update(frame, 1, length-1);
 		long temp = crc32.getValue();
-		
+		System.out.println(temp);//CRC value 출력
 		tempCRC[3] = (byte)(int)(temp & 255L);
 		tempCRC[2] = (byte)(int)(temp >>> 8 & 255L);
 		tempCRC[1] = (byte)(int)(temp >>> 16 & 255L);

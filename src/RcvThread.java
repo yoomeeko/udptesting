@@ -25,6 +25,7 @@ class RcvThread extends Thread {
 		byte[] bufftemp = new byte[Server.MAXBUFFER+1];
 		byte[] buff = null;
 		String s;
+		System.out.println("hello");
 		rcv_packet = new DatagramPacket(bufftemp, bufftemp.length);
 		while (sem) {
 			try {
@@ -35,7 +36,7 @@ class RcvThread extends Thread {
 		       compbitset.append(bufftemp);
 		       buff = compbitset.toByteArray();
 
-//		       System.out.println(compbitset.toString());
+		       System.out.println(compbitset.toString());
 			} catch(IOException e) {
 				System.out.println("Thread exception "+e);
 			}
@@ -45,24 +46,21 @@ class RcvThread extends Thread {
 				i++;
 			}
 			bufferlength = i;
-			buff = Arrays.copyOfRange(buff, 0,bufferlength+1);
+			buff = Arrays.copyOfRange(buff, 0,bufferlength);
 			error = Error(buff);
-			
+			System.out.println("hello");
 			if((IsUframe(buff)||IsSframe(buff))&&error) continue;
-			if(!IsUframe(buff)){
-		    for(int j=3; j<buff.length-5; j++){
-		    	System.out.print((char)buff[j]);
-
-	       }
-	       System.out.println();
+			else if(!IsUframe(buff)){
+				for(int j=3; j<buff.length-5; j++){
+					System.out.print((char)buff[j]);
+				}
+				System.out.println();
 			}
 			makeFrameAndSendingIfNeed(buff);
-
-
 		}
-		
 		System.out.println("grace out");
 	}
+	//프레임을 만드는데 만약 필요하면 응답 프레임을 전송하는 함수
 	private byte[] makeFrameAndSendingIfNeed(byte[] buff) {
 		// TODO Auto-generated method stub
 		if(IsUframe(buff)&&IsClient(buff)){
@@ -93,7 +91,11 @@ class RcvThread extends Thread {
 		}
 		return buff;
 	}
-
+	
+	
+	
+	
+	//각각 무슨 프레임인지를 구분하는 프레임
 	private boolean IsIframe(byte[] buff) {
 		// TODO Auto-generated method stub
 		byte control = buff[2];
@@ -114,25 +116,36 @@ class RcvThread extends Thread {
 		if(control == (byte) 0xC1 || control == (byte) 0xD1) return true;
 		else return false;
 	}
+	
+	
+	
+	//client인지를 구분하는 함수
 	private boolean IsClient(byte[] buff) {
 		// TODO Auto-generated method stub
 		byte control = buff[2];
 		if(control == (byte) 0xC1) return true;
 		else return false;
 	}
+	
+	
+	
+	
+	//에러를 검출하는 함수
 	private boolean Error(byte[] buff) {
 		// TODO Auto-generated method stub
 		//1. flag 체크 buff[0]
-		if(buff[0] != 126) return true;		
-		if(buff[buff.length-1] != (byte) 126) return true;
+		//if(buff[0] != 126) return true;		
+		//if(buff[buff.length-1] != (byte) 126) return true;
 		//2. CRC 체크 
-//		System.out.println(buff.length);
+		System.out.println(buff.length);
 		byte[] crccode = new byte[4];
-		crccode = Server.getCRC(buff, buff.length-6);
-		if(crccode[0] != buff[buff.length-5] || crccode[1]!=buff[buff.length-4] || 
-				crccode[2]!=buff[buff.length-3]||crccode[3]!=buff[buff.length-2])
-			return true;
+		
+//		crccode = Server.getCRC(buff, buff.length-5);
 //		System.out.println("hello");
+//		if(crccode[0] != buff[buff.length-5] || crccode[1]!=buff[buff.length-4] || 
+//				crccode[2]!=buff[buff.length-3]||crccode[3]!=buff[buff.length-2])
+//			return true;
+		System.out.println("hello");
 		byte rntemp;
 		if(IsSframe(buff)){
 		//3. control 체크
@@ -143,7 +156,7 @@ class RcvThread extends Thread {
 		}
 		if(IsIframe(buff)){
 			
-			rntemp = (byte)(Server.rn*16 + (Server.rn+1)%8);		
+			rntemp = (byte)(Server.rn*16 + (Server.rn+1)%2);		
 			if(buff[2] != rntemp) return true;
 		}
 		return false;
