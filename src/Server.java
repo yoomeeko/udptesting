@@ -175,7 +175,7 @@ public class Server {
 		else control = (byte) 0xD1;
 		compbitset.append(control);
 		byte[] information = new byte[500];
-		for(int i=0; i<500; i++) information[i] = 0x55;
+		for(int i=0; i<500; i++) information[i] = 0x00;
 		compbitset.append(information);
 		byte[] crccode = new byte[4];
 		crccode = getCRC(compbitset.toByteArray(), compbitset.toByteArray().length-1);
